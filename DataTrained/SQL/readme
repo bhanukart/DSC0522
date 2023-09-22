@@ -1,1 +1,26 @@
+1. Query to print pneumonia patients first name who is weighing more than 100
 
+SELECT first_name FROM patients 
+WHERE weight>100 and patient_id in (Select patient_id from admissions where diagnosis == 'Pneumonia')
+
+2. Query to print attending doctor id who has attended lowest patients and how many patients he/she attended
+
+SELECT attending_doctor_id, COUNT(*) AS patients_attended FROM admissions 
+GROUP BY attending_doctor_id
+ORDER BY patients_attended 
+LIMIT 1
+
+3. Query to show doctor id and last name who attended highest patients
+
+SELECT doctor_id, last_name FROM doctors
+WHERE doctor_id IN(
+SELECT attending_doctor_id FROM (SELECT attending_doctor_id, COUNT(*) AS patients_attended FROM admissions 
+GROUP BY attending_doctor_id
+ORDER BY patients_attended  DESC
+LIMIT 1))
+
+4. Query to show all Ontario province patients id's allergic to Honey and Sulfa
+
+Select patients.patient_id from patients
+join province_names on patients.province_id = province_names.province_id
+WHERE province_names.province_name == 'Ontario' and patients.allergies in ('Honey','Sulfa')
